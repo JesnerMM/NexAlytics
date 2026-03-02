@@ -47,18 +47,25 @@ public class DashboardService
         };
 
         // Ventas por mes (últimos 12 meses)
-        dto.VentasPorMes = await _context.FactVentas
+        dto.VentasPorMes = (await _context.FactVentas
             .Include(f => f.DimFecha)
             .Where(f => f.EmpresaId == empresaId && f.DimFecha != null
                 && f.DimFecha.Fecha >= now.AddMonths(-12))
             .GroupBy(f => new { f.DimFecha!.Año, f.DimFecha.Mes, f.DimFecha.NombreMes })
-            .Select(g => new ChartDataPoint
+            .Select(g => new
             {
-                Label = $"{g.Key.NombreMes} {g.Key.Año}",
+                g.Key.Año,
+                g.Key.Mes,
+                g.Key.NombreMes,
                 Value = g.Sum(x => x.Total)
             })
-            .OrderBy(x => x.Label)
-            .ToListAsync();
+            .OrderBy(x => x.Año).ThenBy(x => x.Mes)
+            .ToListAsync())
+            .Select(x => new ChartDataPoint
+            {
+                Label = $"{x.NombreMes} {x.Año}",
+                Value = x.Value
+            }).ToList();
 
         // Ventas por estado
         dto.VentasPorEstado = await _context.Ventas
@@ -89,17 +96,24 @@ public class DashboardService
     public async Task<List<ChartDataPoint>> GetVentasPorMesAsync(int empresaId, int months = 12)
     {
         var from = DateTime.UtcNow.AddMonths(-months);
-        return await _context.FactVentas
+        return (await _context.FactVentas
             .Include(f => f.DimFecha)
             .Where(f => f.EmpresaId == empresaId && f.DimFecha != null && f.DimFecha.Fecha >= from)
             .GroupBy(f => new { f.DimFecha!.Año, f.DimFecha.Mes, f.DimFecha.NombreMes })
-            .Select(g => new ChartDataPoint
+            .Select(g => new
             {
-                Label = $"{g.Key.NombreMes} {g.Key.Año}",
+                g.Key.Año,
+                g.Key.Mes,
+                g.Key.NombreMes,
                 Value = g.Sum(x => x.Total)
             })
-            .OrderBy(x => x.Label)
-            .ToListAsync();
+            .OrderBy(x => x.Año).ThenBy(x => x.Mes)
+            .ToListAsync())
+            .Select(x => new ChartDataPoint
+            {
+                Label = $"{x.NombreMes} {x.Año}",
+                Value = x.Value
+            }).ToList();
     }
 
     public async Task<List<ChartDataPoint>> GetPagosPorMetodoAsync(int empresaId)

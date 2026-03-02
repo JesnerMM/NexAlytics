@@ -11,7 +11,9 @@
       "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add InitialCreate 2>&1)",
       "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" database update 2>&1)",
       "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" run 2>&1)",
-      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add FixStgVentaDecimal 2>&1)"
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add FixStgVentaDecimal 2>&1)",
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" database drop --force 2>&1)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" build 2>&1)"
     ]
   }
 }

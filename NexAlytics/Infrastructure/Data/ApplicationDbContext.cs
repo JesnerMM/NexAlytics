@@ -137,14 +137,14 @@ public class ApplicationDbContext : DbContext
             Activo = true
         });
 
-        // Password: Admin123! (BCrypt-like hash for demo - using SHA256 hex)
+        // Password: Admin123! — SHA256 hex of "Admin123!"
         modelBuilder.Entity<Usuario>().HasData(new Usuario
         {
             Id = 1,
             EmpresaId = 1,
             Nombre = "Administrador",
             Email = "admin@demo.com",
-            PasswordHash = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9", // Admin123!
+            PasswordHash = "3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121", // Admin123!
             Rol = "Admin",
             FechaCreacion = now
         });

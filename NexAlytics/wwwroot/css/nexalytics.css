@@ -511,9 +511,16 @@ body {
 }
 
 /* ==============================
+   FORM INSIDE BTN-GROUP FIX
+   ============================== */
+.btn-group > form {
+    display: contents;
+}
+
+/* ==============================
    LOGIN PAGE
    ============================== */
-.nex-login-body {
+.nex-login-bg {
     min-height: 100vh;
     background: linear-gradient(135deg, #111827 0%, #1e3a5f 50%, #0072ff 100%);
     display: flex;
@@ -567,7 +574,7 @@ body {
     margin: 0;
 }
 
-.nex-login-body {
+.nex-login-card-body {
     padding: 2rem;
 }
 

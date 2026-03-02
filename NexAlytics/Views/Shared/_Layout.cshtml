@@ -73,6 +73,17 @@
                             <span>Analytics</span>
                         </a>
                     </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nex-sidebar-divider"></li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")"
+                               asp-controller="Usuario" asp-action="Index">
+                                <i class="bi bi-person-gear"></i>
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
 
