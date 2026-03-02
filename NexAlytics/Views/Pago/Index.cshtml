@@ -8,7 +8,12 @@
         <h2><i class="bi bi-credit-card me-2"></i>Pagos</h2>
         <span class="text-muted">@Model.TotalCount registros</span>
     </div>
-    <a asp-action="Create" class="btn nex-btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo Pago</a>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportExcel" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Exportar Excel
+        </a>
+        <a asp-action="Create" class="btn nex-btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo Pago</a>
+    </div>
 </div>
 
 <div class="nex-card">

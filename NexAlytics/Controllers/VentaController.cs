@@ -11,11 +11,13 @@ public class VentaController : Controller
 {
     private readonly VentaService _ventaService;
     private readonly ClienteService _clienteService;
+    private readonly ExportService _exportService;
 
-    public VentaController(VentaService ventaService, ClienteService clienteService)
+    public VentaController(VentaService ventaService, ClienteService clienteService, ExportService exportService)
     {
         _ventaService = ventaService;
         _clienteService = clienteService;
+        _exportService = exportService;
     }
 
     private const int PageSize = 10;
@@ -89,6 +91,14 @@ public class VentaController : Controller
         await _ventaService.DeleteAsync(id, GetEmpresaId());
         TempData["Success"] = "Venta eliminada";
         return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> ExportExcel()
+    {
+        var data = await _ventaService.GetAllAsync(GetEmpresaId());
+        var bytes = _exportService.ExportVentas(data);
+        var fileName = $"Ventas_{DateTime.Now:yyyyMMdd}.xlsx";
+        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
     }
 
     private async Task LoadClientesAsync()

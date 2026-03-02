@@ -11,11 +11,13 @@ public class PagoController : Controller
 {
     private readonly PagoService _pagoService;
     private readonly VentaService _ventaService;
+    private readonly ExportService _exportService;
 
-    public PagoController(PagoService pagoService, VentaService ventaService)
+    public PagoController(PagoService pagoService, VentaService ventaService, ExportService exportService)
     {
         _pagoService = pagoService;
         _ventaService = ventaService;
+        _exportService = exportService;
     }
 
     private const int PageSize = 10;
@@ -93,6 +95,14 @@ public class PagoController : Controller
         await _pagoService.DeleteAsync(id, GetEmpresaId());
         TempData["Success"] = "Pago eliminado";
         return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> ExportExcel()
+    {
+        var data = await _pagoService.GetAllAsync(GetEmpresaId());
+        var bytes = _exportService.ExportPagos(data);
+        var fileName = $"Pagos_{DateTime.Now:yyyyMMdd}.xlsx";
+        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
     }
 
     private async Task LoadVentasAsync()

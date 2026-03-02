@@ -39,6 +39,7 @@ try
     builder.Services.AddScoped<DashboardService>();
     builder.Services.AddScoped<PowerBiService>();
     builder.Services.AddScoped<UsuarioService>();
+    builder.Services.AddScoped<ExportService>();
     builder.Services.AddScoped<EtlJob>();
 
     // Cookie Authentication

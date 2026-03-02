@@ -9,10 +9,12 @@ namespace NexAlytics.Controllers;
 public class ClienteController : Controller
 {
     private readonly ClienteService _clienteService;
+    private readonly ExportService _exportService;
 
-    public ClienteController(ClienteService clienteService)
+    public ClienteController(ClienteService clienteService, ExportService exportService)
     {
         _clienteService = clienteService;
+        _exportService = exportService;
     }
 
     private const int PageSize = 10;
@@ -74,6 +76,14 @@ public class ClienteController : Controller
         await _clienteService.DeleteAsync(id, GetEmpresaId());
         TempData["Success"] = "Cliente eliminado";
         return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> ExportExcel()
+    {
+        var data = await _clienteService.GetAllAsync(GetEmpresaId());
+        var bytes = _exportService.ExportClientes(data);
+        var fileName = $"Clientes_{DateTime.Now:yyyyMMdd}.xlsx";
+        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
     }
 
     private int GetEmpresaId()
