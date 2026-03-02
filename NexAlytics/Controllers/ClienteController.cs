@@ -10,11 +10,13 @@ public class ClienteController : Controller
 {
     private readonly ClienteService _clienteService;
     private readonly ExportService _exportService;
+    private readonly AuditService _audit;
 
-    public ClienteController(ClienteService clienteService, ExportService exportService)
+    public ClienteController(ClienteService clienteService, ExportService exportService, AuditService audit)
     {
         _clienteService = clienteService;
         _exportService = exportService;
+        _audit = audit;
     }
 
     private const int PageSize = 10;
@@ -39,7 +41,8 @@ public class ClienteController : Controller
     public async Task<IActionResult> Create(ClienteDto dto)
     {
         if (!ModelState.IsValid) return View(dto);
-        await _clienteService.CreateAsync(dto, GetEmpresaId());
+        var created = await _clienteService.CreateAsync(dto, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Crear", "Cliente", created.Id, created.Nombre);
         TempData["Success"] = "Cliente creado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -58,6 +61,7 @@ public class ClienteController : Controller
         if (!ModelState.IsValid) return View(dto);
         var ok = await _clienteService.UpdateAsync(dto, GetEmpresaId());
         if (!ok) return NotFound();
+        await _audit.LogAsync(GetEmpresaId(), "Actualizar", "Cliente", dto.Id, dto.Nombre);
         TempData["Success"] = "Cliente actualizado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -74,6 +78,7 @@ public class ClienteController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _clienteService.DeleteAsync(id, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Eliminar", "Cliente", id);
         TempData["Success"] = "Cliente eliminado";
         return RedirectToAction(nameof(Index));
     }

@@ -12,12 +12,14 @@ public class VentaController : Controller
     private readonly VentaService _ventaService;
     private readonly ClienteService _clienteService;
     private readonly ExportService _exportService;
+    private readonly AuditService _audit;
 
-    public VentaController(VentaService ventaService, ClienteService clienteService, ExportService exportService)
+    public VentaController(VentaService ventaService, ClienteService clienteService, ExportService exportService, AuditService audit)
     {
         _ventaService = ventaService;
         _clienteService = clienteService;
         _exportService = exportService;
+        _audit = audit;
     }
 
     private const int PageSize = 10;
@@ -52,7 +54,8 @@ public class VentaController : Controller
             await LoadClientesAsync();
             return View(dto);
         }
-        await _ventaService.CreateAsync(dto, GetEmpresaId());
+        var created = await _ventaService.CreateAsync(dto, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Crear", "Venta", created.Id, $"Cliente #{created.ClienteId} - {created.Total:C}");
         TempData["Success"] = "Venta creada exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -76,6 +79,7 @@ public class VentaController : Controller
         }
         var ok = await _ventaService.UpdateAsync(dto, GetEmpresaId());
         if (!ok) return NotFound();
+        await _audit.LogAsync(GetEmpresaId(), "Actualizar", "Venta", dto.Id, $"{dto.Total:C} - {dto.Estado}");
         TempData["Success"] = "Venta actualizada exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -92,6 +96,7 @@ public class VentaController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _ventaService.DeleteAsync(id, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Eliminar", "Venta", id);
         TempData["Success"] = "Venta eliminada";
         return RedirectToAction(nameof(Index));
     }

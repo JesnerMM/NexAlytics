@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Venta> Ventas => Set<Venta>();
     public DbSet<Pago> Pagos => Set<Pago>();
     public DbSet<ImportJob> ImportJobs => Set<ImportJob>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     // Staging tables
     public DbSet<StgCliente> StgClientes => Set<StgCliente>();
@@ -90,6 +91,17 @@ public class ApplicationDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.HasOne(x => x.Empresa).WithMany().HasForeignKey(x => x.EmpresaId);
+        });
+
+        // AuditLog
+        modelBuilder.Entity<AuditLog>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.UsuarioNombre).HasMaxLength(200);
+            e.Property(x => x.Accion).HasMaxLength(50);
+            e.Property(x => x.Entidad).HasMaxLength(100);
+            e.Property(x => x.Detalle).HasMaxLength(500);
+            e.HasIndex(x => new { x.EmpresaId, x.Fecha });
         });
 
         // Staging

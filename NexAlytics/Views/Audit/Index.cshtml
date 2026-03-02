@@ -1,0 +1,95 @@
+@model NexAlytics.Application.DTOs.PagedResult<NexAlytics.Domain.Entities.AuditLog>
+@{
+    ViewData["Title"] = "Auditoría";
+    var entidades = new[] { "Cliente", "Producto", "Venta", "Pago", "Usuario" };
+}
+
+<div class="nex-page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2><i class="bi bi-shield-check me-2"></i>Auditoría</h2>
+        <span class="text-muted">@Model.TotalCount eventos registrados</span>
+    </div>
+</div>
+
+<div class="nex-card">
+    <div class="nex-card-header">
+        <form method="get" class="d-flex gap-2 align-items-end flex-wrap">
+            <div>
+                <label class="form-label small mb-1">Módulo</label>
+                <select name="entidad" class="form-select form-select-sm" style="min-width:150px">
+                    <option value="">Todos</option>
+                    @foreach (var e in entidades)
+                    {
+                        <option value="@e" selected="@(ViewData["EntidadFiltro"]?.ToString() == e)">@e</option>
+                    }
+                </select>
+            </div>
+            <div class="d-flex gap-2 align-self-end">
+                <button type="submit" class="btn btn-sm btn-outline-primary">Filtrar</button>
+                @if (ViewData["EntidadFiltro"] != null)
+                {
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Limpiar</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <div class="nex-card-body p-0">
+        <div class="table-responsive">
+            <table class="table nex-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Módulo</th>
+                        <th>ID</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.Items)
+                    {
+                        <tr>
+                            <td class="text-nowrap">
+                                <span class="small">@log.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-person-circle me-1 text-muted"></i>@log.UsuarioNombre
+                            </td>
+                            <td>
+                                @{
+                                    var (badgeClass, icon) = log.Accion switch
+                                    {
+                                        "Crear"      => ("nex-badge-success", "bi-plus-circle"),
+                                        "Actualizar" => ("nex-badge-info",    "bi-pencil"),
+                                        "Eliminar"   => ("nex-badge-danger",  "bi-trash"),
+                                        _            => ("nex-badge-secondary","bi-circle")
+                                    };
+                                }
+                                <span class="nex-badge @badgeClass">
+                                    <i class="bi @icon me-1"></i>@log.Accion
+                                </span>
+                            </td>
+                            <td><span class="badge bg-light text-dark">@log.Entidad</span></td>
+                            <td>
+                                @if (log.EntidadId.HasValue)
+                                {
+                                    <span class="nex-id">#@log.EntidadId</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@log.Detalle</td>
+                        </tr>
+                    }
+                    @if (!Model.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No hay eventos registrados</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @await Html.PartialAsync("_Pagination")
+</div>

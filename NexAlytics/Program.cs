@@ -42,6 +42,7 @@ try
     builder.Services.AddScoped<ExportService>();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<LoginAttemptService>();
+    builder.Services.AddScoped<AuditService>();
     builder.Services.AddScoped<EtlJob>();
 
     // Cookie Authentication

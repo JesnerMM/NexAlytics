@@ -10,11 +10,13 @@ public class ProductoController : Controller
 {
     private readonly ProductoService _productoService;
     private readonly ExportService _exportService;
+    private readonly AuditService _audit;
 
-    public ProductoController(ProductoService productoService, ExportService exportService)
+    public ProductoController(ProductoService productoService, ExportService exportService, AuditService audit)
     {
         _productoService = productoService;
         _exportService = exportService;
+        _audit = audit;
     }
 
     private const int PageSize = 10;
@@ -43,7 +45,8 @@ public class ProductoController : Controller
     public async Task<IActionResult> Create(ProductoDto dto)
     {
         if (!ModelState.IsValid) return View(dto);
-        await _productoService.CreateAsync(dto, GetEmpresaId());
+        var created = await _productoService.CreateAsync(dto, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Crear", "Producto", created.Id, created.Nombre);
         TempData["Success"] = "Producto creado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -62,6 +65,7 @@ public class ProductoController : Controller
         if (!ModelState.IsValid) return View(dto);
         var ok = await _productoService.UpdateAsync(dto, GetEmpresaId());
         if (!ok) return NotFound();
+        await _audit.LogAsync(GetEmpresaId(), "Actualizar", "Producto", dto.Id, dto.Nombre);
         TempData["Success"] = "Producto actualizado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -78,6 +82,7 @@ public class ProductoController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _productoService.DeleteAsync(id, GetEmpresaId());
+        await _audit.LogAsync(GetEmpresaId(), "Eliminar", "Producto", id);
         TempData["Success"] = "Producto eliminado";
         return RedirectToAction(nameof(Index));
     }

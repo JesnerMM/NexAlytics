@@ -10,10 +10,12 @@ namespace NexAlytics.Controllers;
 public class UsuarioController : Controller
 {
     private readonly UsuarioService _usuarioService;
+    private readonly AuditService _audit;
 
-    public UsuarioController(UsuarioService usuarioService)
+    public UsuarioController(UsuarioService usuarioService, AuditService audit)
     {
         _usuarioService = usuarioService;
+        _audit = audit;
     }
 
     private const int PageSize = 10;
@@ -48,6 +50,7 @@ public class UsuarioController : Controller
             return View(dto);
         }
 
+        await _audit.LogAsync(GetEmpresaId(), "Crear", "Usuario", null, $"{dto.Email} - Rol: {dto.Rol}");
         TempData["Success"] = "Usuario creado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -76,6 +79,7 @@ public class UsuarioController : Controller
             return View(dto);
         }
 
+        await _audit.LogAsync(GetEmpresaId(), "Actualizar", "Usuario", dto.Id, $"{dto.Email} - Rol: {dto.Rol}");
         TempData["Success"] = "Usuario actualizado exitosamente";
         return RedirectToAction(nameof(Index));
     }
@@ -95,7 +99,10 @@ public class UsuarioController : Controller
         if (!success)
             TempData["Error"] = error;
         else
+        {
+            await _audit.LogAsync(GetEmpresaId(), "Eliminar", "Usuario", id);
             TempData["Success"] = "Usuario eliminado";
+        }
 
         return RedirectToAction(nameof(Index));
     }
