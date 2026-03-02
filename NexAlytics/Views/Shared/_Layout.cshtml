@@ -124,6 +124,12 @@
                             <li><h6 class="dropdown-header">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</h6></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
+                                <a asp-controller="Account" asp-action="CambiarPassword" class="dropdown-item">
+                                    <i class="bi bi-key"></i> Cambiar contraseña
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
                                 <form asp-controller="Account" asp-action="Logout" method="post">
                                     <button type="submit" class="dropdown-item text-danger">
                                         <i class="bi bi-box-arrow-right"></i> Cerrar sesión

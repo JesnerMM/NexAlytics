@@ -90,6 +90,20 @@ public class UsuarioService
         return (true, null);
     }
 
+    public async Task<(bool Success, string? Error)> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
+    {
+        var entity = await _context.Usuarios.FindAsync(userId);
+        if (entity == null)
+            return (false, "Usuario no encontrado");
+
+        if (entity.PasswordHash != AuthService.ComputeHash(currentPassword))
+            return (false, "La contraseña actual es incorrecta");
+
+        entity.PasswordHash = AuthService.ComputeHash(newPassword);
+        await _context.SaveChangesAsync();
+        return (true, null);
+    }
+
     public async Task<(bool Success, string? Error)> DeleteAsync(int id, int empresaId, int currentUserId)
     {
         if (id == currentUserId)

@@ -1,6 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NexAlytics.Application.DTOs;
 using NexAlytics.Application.Services;
 
 namespace NexAlytics.Controllers;
@@ -8,10 +11,12 @@ namespace NexAlytics.Controllers;
 public class AccountController : Controller
 {
     private readonly AuthService _authService;
+    private readonly UsuarioService _usuarioService;
 
-    public AccountController(AuthService authService)
+    public AccountController(AuthService authService, UsuarioService usuarioService)
     {
         _authService = authService;
+        _usuarioService = usuarioService;
     }
 
     [HttpGet]
@@ -58,5 +63,29 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login");
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult CambiarPassword() => View(new CambiarPasswordDto());
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CambiarPassword(CambiarPasswordDto dto)
+    {
+        if (!ModelState.IsValid) return View(dto);
+
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
+        var (success, error) = await _usuarioService.ChangePasswordAsync(userId, dto.PasswordActual, dto.NuevaPassword);
+
+        if (!success)
+        {
+            ModelState.AddModelError(nameof(dto.PasswordActual), error!);
+            return View(dto);
+        }
+
+        TempData["Success"] = "Contraseña actualizada exitosamente";
+        return RedirectToAction("Index", "Dashboard");
     }
 }
