@@ -12,11 +12,13 @@ public class AccountController : Controller
 {
     private readonly AuthService _authService;
     private readonly UsuarioService _usuarioService;
+    private readonly LoginAttemptService _loginAttempts;
 
-    public AccountController(AuthService authService, UsuarioService usuarioService)
+    public AccountController(AuthService authService, UsuarioService usuarioService, LoginAttemptService loginAttempts)
     {
         _authService = authService;
         _usuarioService = usuarioService;
+        _loginAttempts = loginAttempts;
     }
 
     [HttpGet]
@@ -39,12 +41,27 @@ public class AccountController : Controller
             return View();
         }
 
+        // Check lockout before attempting authentication
+        var (isLocked, secondsRemaining) = _loginAttempts.CheckLockout(email);
+        if (isLocked)
+        {
+            var minutes = (int)Math.Ceiling(secondsRemaining / 60.0);
+            ModelState.AddModelError(string.Empty,
+                $"Cuenta bloqueada temporalmente. Intenta de nuevo en {minutes} minuto(s).");
+            return View();
+        }
+
         var principal = await _authService.LoginAsync(email, password);
         if (principal == null)
         {
-            ModelState.AddModelError(string.Empty, "Credenciales inválidas");
+            var remaining = _loginAttempts.RecordFailure(email);
+            ModelState.AddModelError(string.Empty, remaining > 0
+                ? $"Credenciales inválidas. {remaining} intento(s) restante(s) antes del bloqueo."
+                : $"Cuenta bloqueada por {LoginAttemptService.GetLockoutMinutes()} minutos por múltiples intentos fallidos.");
             return View();
         }
+
+        _loginAttempts.RecordSuccess(email);
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,

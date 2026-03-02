@@ -40,6 +40,8 @@ try
     builder.Services.AddScoped<PowerBiService>();
     builder.Services.AddScoped<UsuarioService>();
     builder.Services.AddScoped<ExportService>();
+    builder.Services.AddMemoryCache();
+    builder.Services.AddSingleton<LoginAttemptService>();
     builder.Services.AddScoped<EtlJob>();
 
     // Cookie Authentication
