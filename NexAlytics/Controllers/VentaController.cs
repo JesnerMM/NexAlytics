@@ -22,11 +22,14 @@ public class VentaController : Controller
 
     private const int PageSize = 10;
 
-    public async Task<IActionResult> Index(int page = 1)
+    public async Task<IActionResult> Index(string? estado, DateTime? desde, DateTime? hasta, int page = 1)
     {
         page = Math.Max(1, page);
-        var result = await _ventaService.GetPagedAsync(GetEmpresaId(), page, PageSize);
+        var result = await _ventaService.GetPagedAsync(GetEmpresaId(), page, PageSize, estado, desde, hasta);
 
+        ViewData["EstadoFiltro"] = estado;
+        ViewData["Desde"] = desde?.ToString("yyyy-MM-dd");
+        ViewData["Hasta"] = hasta?.ToString("yyyy-MM-dd");
         ViewData["Page"] = result.Page;
         ViewData["TotalPages"] = result.TotalPages;
         ViewData["TotalCount"] = result.TotalCount;
@@ -93,9 +96,9 @@ public class VentaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> ExportExcel()
+    public async Task<IActionResult> ExportExcel(string? estado, DateTime? desde, DateTime? hasta)
     {
-        var data = await _ventaService.GetAllAsync(GetEmpresaId());
+        var data = await _ventaService.GetAllAsync(GetEmpresaId(), estado, desde, hasta);
         var bytes = _exportService.ExportVentas(data);
         var fileName = $"Ventas_{DateTime.Now:yyyyMMdd}.xlsx";
         return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);

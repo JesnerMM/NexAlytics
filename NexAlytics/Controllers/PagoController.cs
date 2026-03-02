@@ -22,11 +22,14 @@ public class PagoController : Controller
 
     private const int PageSize = 10;
 
-    public async Task<IActionResult> Index(int page = 1)
+    public async Task<IActionResult> Index(string? metodo, DateTime? desde, DateTime? hasta, int page = 1)
     {
         page = Math.Max(1, page);
-        var result = await _pagoService.GetPagedAsync(GetEmpresaId(), page, PageSize);
+        var result = await _pagoService.GetPagedAsync(GetEmpresaId(), page, PageSize, metodo, desde, hasta);
 
+        ViewData["MetodoFiltro"] = metodo;
+        ViewData["Desde"] = desde?.ToString("yyyy-MM-dd");
+        ViewData["Hasta"] = hasta?.ToString("yyyy-MM-dd");
         ViewData["Page"] = result.Page;
         ViewData["TotalPages"] = result.TotalPages;
         ViewData["TotalCount"] = result.TotalCount;
@@ -97,9 +100,9 @@ public class PagoController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> ExportExcel()
+    public async Task<IActionResult> ExportExcel(string? metodo, DateTime? desde, DateTime? hasta)
     {
-        var data = await _pagoService.GetAllAsync(GetEmpresaId());
+        var data = await _pagoService.GetAllAsync(GetEmpresaId(), metodo, desde, hasta);
         var bytes = _exportService.ExportPagos(data);
         var fileName = $"Pagos_{DateTime.Now:yyyyMMdd}.xlsx";
         return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);

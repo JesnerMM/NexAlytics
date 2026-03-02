@@ -17,11 +17,16 @@ public class PagoService
         _logger = logger;
     }
 
-    public async Task<List<PagoDto>> GetAllAsync(int empresaId)
+    public async Task<List<PagoDto>> GetAllAsync(int empresaId,
+        string? metodo = null, DateTime? desde = null, DateTime? hasta = null)
     {
-        return await _context.Pagos
-            .Include(p => p.Venta)
-            .Where(p => p.Venta != null && p.Venta.EmpresaId == empresaId)
+        var query = _context.Pagos.Where(p => p.Venta != null && p.Venta.EmpresaId == empresaId);
+
+        if (!string.IsNullOrEmpty(metodo)) query = query.Where(p => p.Metodo == metodo);
+        if (desde.HasValue) query = query.Where(p => p.Fecha >= desde.Value);
+        if (hasta.HasValue) query = query.Where(p => p.Fecha <= hasta.Value.AddDays(1).AddSeconds(-1));
+
+        return await query
             .Select(p => new PagoDto
             {
                 Id = p.Id,
@@ -35,9 +40,14 @@ public class PagoService
             .ToListAsync();
     }
 
-    public async Task<PagedResult<PagoDto>> GetPagedAsync(int empresaId, int page, int pageSize)
+    public async Task<PagedResult<PagoDto>> GetPagedAsync(int empresaId, int page, int pageSize,
+        string? metodo = null, DateTime? desde = null, DateTime? hasta = null)
     {
         var query = _context.Pagos.Where(p => p.Venta != null && p.Venta.EmpresaId == empresaId);
+
+        if (!string.IsNullOrEmpty(metodo)) query = query.Where(p => p.Metodo == metodo);
+        if (desde.HasValue) query = query.Where(p => p.Fecha >= desde.Value);
+        if (hasta.HasValue) query = query.Where(p => p.Fecha <= hasta.Value.AddDays(1).AddSeconds(-1));
 
         var total = await query.CountAsync();
 

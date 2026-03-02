@@ -17,11 +17,16 @@ public class VentaService
         _logger = logger;
     }
 
-    public async Task<List<VentaDto>> GetAllAsync(int empresaId)
+    public async Task<List<VentaDto>> GetAllAsync(int empresaId,
+        string? estado = null, DateTime? desde = null, DateTime? hasta = null)
     {
-        return await _context.Ventas
-            .Include(v => v.Cliente)
-            .Where(v => v.EmpresaId == empresaId)
+        var query = _context.Ventas.Where(v => v.EmpresaId == empresaId);
+
+        if (!string.IsNullOrEmpty(estado)) query = query.Where(v => v.Estado == estado);
+        if (desde.HasValue) query = query.Where(v => v.Fecha >= desde.Value);
+        if (hasta.HasValue) query = query.Where(v => v.Fecha <= hasta.Value.AddDays(1).AddSeconds(-1));
+
+        return await query
             .Select(v => new VentaDto
             {
                 Id = v.Id,
@@ -35,9 +40,14 @@ public class VentaService
             .ToListAsync();
     }
 
-    public async Task<PagedResult<VentaDto>> GetPagedAsync(int empresaId, int page, int pageSize)
+    public async Task<PagedResult<VentaDto>> GetPagedAsync(int empresaId, int page, int pageSize,
+        string? estado = null, DateTime? desde = null, DateTime? hasta = null)
     {
         var query = _context.Ventas.Where(v => v.EmpresaId == empresaId);
+
+        if (!string.IsNullOrEmpty(estado)) query = query.Where(v => v.Estado == estado);
+        if (desde.HasValue) query = query.Where(v => v.Fecha >= desde.Value);
+        if (hasta.HasValue) query = query.Where(v => v.Fecha <= hasta.Value.AddDays(1).AddSeconds(-1));
 
         var total = await query.CountAsync();
 
