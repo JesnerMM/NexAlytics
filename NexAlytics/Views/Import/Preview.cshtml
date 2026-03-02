@@ -1,0 +1,107 @@
+@model NexAlytics.Application.DTOs.ImportPreviewDto
+@{
+    ViewData["Title"] = "Vista Previa de Importación";
+}
+
+<div class="nex-page-header">
+    <h2><i class="bi bi-eye me-2"></i>Vista Previa — @Model.Tipo</h2>
+    <span class="text-muted">@Model.ArchivoNombre</span>
+</div>
+
+<!-- Summary cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="nex-kpi-card nex-kpi-primary">
+            <div class="nex-kpi-icon"><i class="bi bi-list-ul"></i></div>
+            <div class="nex-kpi-content">
+                <div class="nex-kpi-value">@Model.TotalRegistros</div>
+                <div class="nex-kpi-label">Total Registros</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="nex-kpi-card nex-kpi-success">
+            <div class="nex-kpi-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="nex-kpi-content">
+                <div class="nex-kpi-value">@Model.RegistrosValidos</div>
+                <div class="nex-kpi-label">Válidos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="nex-kpi-card nex-kpi-warning">
+            <div class="nex-kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="nex-kpi-content">
+                <div class="nex-kpi-value">@Model.RegistrosError</div>
+                <div class="nex-kpi-label">Con Errores</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Errors.Any())
+{
+    <div class="alert alert-warning">
+        <h6><i class="bi bi-exclamation-triangle me-2"></i>Advertencias encontradas (@Model.Errors.Count)</h6>
+        <ul class="mb-0 small">
+            @foreach (var err in Model.Errors.Take(10))
+            {
+                <li>@err</li>
+            }
+            @if (Model.Errors.Count > 10)
+            {
+                <li>... y @(Model.Errors.Count - 10) más</li>
+            }
+        </ul>
+    </div>
+}
+
+<!-- Preview table -->
+<div class="nex-card mb-4">
+    <div class="nex-card-header">
+        <h5>Primeros @Model.Rows.Count registros (máx. 20)</h5>
+    </div>
+    <div class="nex-card-body p-0">
+        <div class="table-responsive">
+            <table class="table nex-table mb-0">
+                <thead>
+                    <tr>
+                        @foreach (var col in Model.Columns)
+                        {
+                            <th>@col</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            @foreach (var col in Model.Columns)
+                            {
+                                <td>@row.GetValueOrDefault(col, "")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Actions -->
+<div class="d-flex gap-3">
+    @if (Model.RegistrosValidos > 0)
+    {
+        <form asp-action="Confirm" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="importJobId" value="@Model.ImportJobId" />
+            <button type="submit" class="btn nex-btn-primary">
+                <i class="bi bi-check-circle me-1"></i>
+                Confirmar Importación (@Model.RegistrosValidos registros)
+            </button>
+        </form>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Cancelar
+    </a>
+</div>

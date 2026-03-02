@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" restore 2>&1)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" build 2>&1)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" run --project . --)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" ef migrations add InitialCreate 2>&1)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" tool install --global dotnet-ef 2>&1)",
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add InitialCreate --project /mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics/NexAlytics.csproj 2>&1)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" tool uninstall --global dotnet-ef 2>&1 && \"/mnt/c/Program Files/dotnet/dotnet.exe\" tool install --global dotnet-ef --version 9.0.1 2>&1)",
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add InitialCreate 2>&1)",
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" database update 2>&1)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" run 2>&1)",
+      "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add FixStgVentaDecimal 2>&1)"
+    ]
+  }
+}

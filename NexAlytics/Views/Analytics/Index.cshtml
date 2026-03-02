@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "Analytics";
+    var pbiEmbed = ViewData["PbiEmbed"] as NexAlytics.Application.DTOs.PowerBiEmbedDto;
+}
+
+<div class="nex-page-header">
+    <h2><i class="bi bi-bar-chart-line me-2"></i>Analytics</h2>
+    <span class="text-muted">Análisis avanzado de datos del Data Warehouse</span>
+</div>
+
+<!-- Chart row 1 -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="nex-card">
+            <div class="nex-card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-bar-chart me-2"></i>Ventas por Mes (12 meses)</h5>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary active" onclick="loadVentasMes(6)">6M</button>
+                    <button class="btn btn-outline-secondary" onclick="loadVentasMes(12)">12M</button>
+                </div>
+            </div>
+            <div class="nex-card-body">
+                <canvas id="analyticsVentasMes" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="nex-card">
+            <div class="nex-card-header">
+                <h5><i class="bi bi-pie-chart me-2"></i>Pagos por Método</h5>
+            </div>
+            <div class="nex-card-body">
+                <canvas id="analyticsPagosMetodo" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart row 2 -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="nex-card">
+            <div class="nex-card-header">
+                <h5><i class="bi bi-donut me-2"></i>Productos por Categoría</h5>
+            </div>
+            <div class="nex-card-body">
+                <canvas id="analyticsCategoria" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Power BI Section -->
+<div class="nex-card">
+    <div class="nex-card-header">
+        <h5><i class="bi bi-window me-2"></i>Power BI Embedded</h5>
+    </div>
+    <div class="nex-card-body">
+        @if (pbiEmbed?.Error != null)
+        {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                @pbiEmbed.Error
+                <p class="mb-0 mt-2 small">Configure las credenciales en <code>appsettings.json</code> → sección <code>PowerBI</code></p>
+            </div>
+        }
+        else if (pbiEmbed != null && !string.IsNullOrEmpty(pbiEmbed.EmbedToken))
+        {
+            <div id="embedContainer" style="height:600px;"></div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.23.1/dist/powerbi.min.js"></script>
+    <script>
+        window.pbiConfig = {
+            embedToken: '@(pbiEmbed?.EmbedToken ?? "")',
+            embedUrl: '@(pbiEmbed?.EmbedUrl ?? "")',
+            reportId: '@(pbiEmbed?.ReportId ?? "")'
+        };
+    </script>
+    <script src="~/js/analytics.js" asp-append-version="true"></script>
+}

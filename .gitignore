@@ -1,0 +1,65 @@
+## -------------------------------------------------------
+## .NET / ASP.NET Core
+## -------------------------------------------------------
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.rsuser
+.vscode/
+
+## NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Publish
+**/publish/
+**/PublishScripts/
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Secrets / environment
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+*.pfx
+*.p12
+secrets.json
+
+## Logs
+*.log
+Serilog/
+
+## Hangfire SQLite (si se usa en dev)
+Hangfire-*.db
+
+## SQL scripts generados
+/SQL/

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NEXAlytics</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/nexalytics.css" asp-append-version="true" />
+</head>
+<body>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="nex-wrapper">
+        <!-- Sidebar -->
+        <nav class="nex-sidebar" id="sidebar">
+            <div class="nex-sidebar-header">
+                <div class="nex-logo">
+                    <span class="nex-logo-icon"><i class="bi bi-graph-up-arrow"></i></span>
+                    <span class="nex-logo-text">NEXAlytics</span>
+                </div>
+            </div>
+
+            <div class="nex-sidebar-menu">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+                           asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cliente" ? "active" : "")"
+                           asp-controller="Cliente" asp-action="Index">
+                            <i class="bi bi-people"></i>
+                            <span>Clientes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Producto" ? "active" : "")"
+                           asp-controller="Producto" asp-action="Index">
+                            <i class="bi bi-box-seam"></i>
+                            <span>Productos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Venta" ? "active" : "")"
+                           asp-controller="Venta" asp-action="Index">
+                            <i class="bi bi-cart3"></i>
+                            <span>Ventas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pago" ? "active" : "")"
+                           asp-controller="Pago" asp-action="Index">
+                            <i class="bi bi-credit-card"></i>
+                            <span>Pagos</span>
+                        </a>
+                    </li>
+                    <li class="nex-sidebar-divider"></li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Import" ? "active" : "")"
+                           asp-controller="Import" asp-action="Index">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span>Importación</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Analytics" ? "active" : "")"
+                           asp-controller="Analytics" asp-action="Index">
+                            <i class="bi bi-bar-chart-line"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nex-sidebar-footer">
+                <a href="/hangfire" target="_blank" class="nav-link">
+                    <i class="bi bi-gear"></i>
+                    <span>Jobs</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <div class="nex-main">
+            <!-- Topbar -->
+            <header class="nex-topbar">
+                <button class="nex-sidebar-toggle" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="nex-breadcrumb">
+                    @if (ViewData["Title"] != null)
+                    {
+                        <span>@ViewData["Title"]</span>
+                    }
+                </div>
+
+                <div class="nex-topbar-right">
+                    <div class="nex-company-name">
+                        <i class="bi bi-building"></i>
+                        <span>@User.FindFirst("EmpresaNombre")?.Value</span>
+                    </div>
+                    <div class="nex-user-menu dropdown">
+                        <button class="btn dropdown-toggle nex-user-btn" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span>@User.Identity?.Name</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page content -->
+            <main class="nex-content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+}
+else
+{
+    @RenderBody()
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="~/js/nexalytics.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

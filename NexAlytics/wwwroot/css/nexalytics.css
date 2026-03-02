@@ -1,0 +1,656 @@
+/* =====================================================
+   NEXAlytics — Custom Admin Theme
+   ===================================================== */
+
+:root {
+    --nex-primary: #1e3a5f;
+    --nex-primary-hover: #162d4a;
+    --nex-accent: #00c6ff;
+    --nex-accent-2: #0072ff;
+    --nex-sidebar-bg: #111827;
+    --nex-sidebar-width: 260px;
+    --nex-sidebar-text: #9ca3af;
+    --nex-sidebar-active-bg: rgba(0, 198, 255, 0.1);
+    --nex-sidebar-active-text: #00c6ff;
+    --nex-topbar-height: 64px;
+    --nex-content-bg: #f3f4f6;
+    --nex-card-bg: #ffffff;
+    --nex-card-border: #e5e7eb;
+    --nex-success: #10b981;
+    --nex-warning: #f59e0b;
+    --nex-danger: #ef4444;
+    --nex-info: #3b82f6;
+    --nex-text: #111827;
+    --nex-text-muted: #6b7280;
+    --transition: all 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--nex-content-bg);
+    color: var(--nex-text);
+    margin: 0;
+    padding: 0;
+}
+
+/* ==============================
+   WRAPPER LAYOUT
+   ============================== */
+.nex-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ==============================
+   SIDEBAR
+   ============================== */
+.nex-sidebar {
+    width: var(--nex-sidebar-width);
+    background: var(--nex-sidebar-bg);
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nex-sidebar-header {
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.nex-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.nex-logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--nex-accent), var(--nex-accent-2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.nex-logo-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.nex-sidebar-menu {
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.nex-sidebar-menu .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1.25rem;
+    color: var(--nex-sidebar-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+    margin: 1px 0;
+}
+
+.nex-sidebar-menu .nav-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.nex-sidebar-menu .nav-link:hover {
+    color: #e5e7eb;
+    background: rgba(255,255,255,0.05);
+}
+
+.nex-sidebar-menu .nav-link.active {
+    color: var(--nex-sidebar-active-text);
+    background: var(--nex-sidebar-active-bg);
+    border-left-color: var(--nex-accent);
+}
+
+.nex-sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 0.75rem 1.25rem;
+}
+
+.nex-sidebar-footer {
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.nex-sidebar-footer .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    color: var(--nex-sidebar-text);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.nex-sidebar-footer .nav-link:hover {
+    color: #e5e7eb;
+}
+
+/* ==============================
+   MAIN CONTENT
+   ============================== */
+.nex-main {
+    flex: 1;
+    margin-left: var(--nex-sidebar-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: var(--transition);
+}
+
+/* ==============================
+   TOPBAR
+   ============================== */
+.nex-topbar {
+    height: var(--nex-topbar-height);
+    background: white;
+    border-bottom: 1px solid var(--nex-card-border);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nex-sidebar-toggle {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--nex-text-muted);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.nex-sidebar-toggle:hover {
+    background: var(--nex-content-bg);
+    color: var(--nex-text);
+}
+
+.nex-breadcrumb {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--nex-text);
+}
+
+.nex-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nex-company-name {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--nex-text-muted);
+    padding: 0.35rem 0.75rem;
+    background: var(--nex-content-bg);
+    border-radius: 20px;
+}
+
+.nex-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--nex-text);
+    background: none;
+    border: 1px solid var(--nex-card-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    transition: var(--transition);
+}
+
+.nex-user-btn:hover {
+    background: var(--nex-content-bg);
+    border-color: #d1d5db;
+}
+
+.nex-user-btn::after { display: none; }
+
+/* ==============================
+   CONTENT AREA
+   ============================== */
+.nex-content {
+    flex: 1;
+    padding: 1.75rem;
+}
+
+/* ==============================
+   PAGE HEADER
+   ============================== */
+.nex-page-header {
+    margin-bottom: 1.5rem;
+}
+
+.nex-page-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--nex-text);
+    margin: 0 0 0.25rem;
+}
+
+/* ==============================
+   CARDS
+   ============================== */
+.nex-card {
+    background: var(--nex-card-bg);
+    border: 1px solid var(--nex-card-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.nex-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--nex-card-border);
+    background: #fafafa;
+}
+
+.nex-card-header h5 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--nex-text);
+}
+
+.nex-card-body {
+    padding: 1.25rem;
+}
+
+/* ==============================
+   KPI CARDS
+   ============================== */
+.nex-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--nex-card-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: var(--transition);
+}
+
+.nex-kpi-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+.nex-kpi-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.nex-kpi-primary .nex-kpi-icon {
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
+    color: white;
+}
+
+.nex-kpi-success .nex-kpi-icon {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+}
+
+.nex-kpi-info .nex-kpi-icon {
+    background: linear-gradient(135deg, #0284c7, #3b82f6);
+    color: white;
+}
+
+.nex-kpi-warning .nex-kpi-icon {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    color: white;
+}
+
+.nex-kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--nex-text);
+    line-height: 1;
+}
+
+.nex-kpi-label {
+    font-size: 0.8rem;
+    color: var(--nex-text-muted);
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+/* ==============================
+   TABLES
+   ============================== */
+.nex-table {
+    font-size: 0.875rem;
+}
+
+.nex-table thead th {
+    background: #f9fafb;
+    color: var(--nex-text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--nex-card-border);
+    white-space: nowrap;
+}
+
+.nex-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.nex-table tbody tr:hover td {
+    background: #fafafa;
+}
+
+.nex-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.nex-id {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--nex-text-muted);
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* ==============================
+   BADGES
+   ============================== */
+.nex-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.nex-badge-success { background: #d1fae5; color: #065f46; }
+.nex-badge-warning { background: #fef3c7; color: #92400e; }
+.nex-badge-secondary { background: #f3f4f6; color: #6b7280; }
+.nex-badge-danger { background: #fee2e2; color: #991b1b; }
+.nex-badge-info { background: #dbeafe; color: #1e40af; }
+
+/* ==============================
+   BUTTONS
+   ============================== */
+.nex-btn-primary {
+    background: linear-gradient(135deg, var(--nex-primary), #2563eb);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.nex-btn-primary:hover {
+    background: linear-gradient(135deg, var(--nex-primary-hover), #1d4ed8);
+    color: white;
+}
+
+/* ==============================
+   FORMS
+   ============================== */
+.form-control:focus, .form-select:focus {
+    border-color: var(--nex-accent);
+    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.15);
+}
+
+/* ==============================
+   STAT MINI
+   ============================== */
+.nex-stat-mini {
+    text-align: center;
+    padding: 1rem;
+    background: var(--nex-content-bg);
+    border-radius: 10px;
+}
+
+.nex-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--nex-text);
+}
+
+.nex-stat-label {
+    font-size: 0.8rem;
+    color: var(--nex-text-muted);
+}
+
+/* ==============================
+   DROPZONE
+   ============================== */
+.nex-dropzone {
+    border: 2px dashed var(--nex-card-border);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nex-dropzone:hover, .nex-dropzone.drag-over {
+    border-color: var(--nex-accent);
+    background: rgba(0, 198, 255, 0.04);
+}
+
+.nex-dropzone-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.nex-dropzone-icon {
+    font-size: 2.5rem;
+    color: var(--nex-text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.nex-dropzone-text {
+    font-size: 1rem;
+    color: var(--nex-text);
+    margin-bottom: 0.25rem;
+}
+
+.nex-dropzone-hint {
+    font-size: 0.8rem;
+    color: var(--nex-text-muted);
+}
+
+/* ==============================
+   LOGIN PAGE
+   ============================== */
+.nex-login-body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #111827 0%, #1e3a5f 50%, #0072ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.nex-login-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.nex-login-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.nex-login-header {
+    background: linear-gradient(135deg, var(--nex-primary), #2563eb);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+}
+
+.nex-login-logo {
+    width: 64px;
+    height: 64px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 1rem;
+}
+
+.nex-login-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    margin: 0 0 0.25rem;
+    letter-spacing: 1px;
+}
+
+.nex-login-subtitle {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.nex-login-body {
+    padding: 2rem;
+}
+
+.nex-btn-login {
+    background: linear-gradient(135deg, var(--nex-primary), #2563eb);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.nex-btn-login:hover {
+    background: linear-gradient(135deg, var(--nex-primary-hover), #1d4ed8);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+}
+
+.nex-login-demo {
+    text-align: center;
+    padding: 0.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+/* ==============================
+   SIDEBAR COLLAPSED
+   ============================== */
+.sidebar-collapsed .nex-sidebar {
+    width: 64px;
+}
+
+.sidebar-collapsed .nex-logo-text,
+.sidebar-collapsed .nex-sidebar-menu .nav-link span,
+.sidebar-collapsed .nex-sidebar-footer .nav-link span {
+    display: none;
+}
+
+.sidebar-collapsed .nex-main {
+    margin-left: 64px;
+}
+
+.sidebar-collapsed .nex-logo-icon {
+    margin: 0 auto;
+}
+
+.sidebar-collapsed .nex-logo {
+    justify-content: center;
+}
+
+.sidebar-collapsed .nex-sidebar-menu .nav-link {
+    justify-content: center;
+    padding: 0.65rem;
+}
+
+.sidebar-collapsed .nex-sidebar-footer .nav-link {
+    justify-content: center;
+}
+
+.sidebar-collapsed .nex-sidebar-divider {
+    margin: 0.75rem 0.5rem;
+}
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 768px) {
+    .nex-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .nex-sidebar.show {
+        transform: translateX(0);
+    }
+
+    .nex-main {
+        margin-left: 0 !important;
+    }
+
+    .nex-company-name {
+        display: none;
+    }
+}
