@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
     // Operational tables
     public DbSet<Empresa> Empresas => Set<Empresa>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<Cliente> Clientes => Set<Cliente>();
     public DbSet<Producto> Productos => Set<Producto>();
     public DbSet<Venta> Ventas => Set<Venta>();
@@ -91,6 +92,14 @@ public class ApplicationDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.HasOne(x => x.Empresa).WithMany().HasForeignKey(x => x.EmpresaId);
+        });
+
+        // PasswordResetToken
+        modelBuilder.Entity<PasswordResetToken>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Token).HasMaxLength(100).IsRequired();
+            e.HasIndex(x => x.Token).IsUnique();
         });
 
         // AuditLog

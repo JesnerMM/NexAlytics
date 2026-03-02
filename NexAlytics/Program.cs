@@ -3,6 +3,7 @@ using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using NexAlytics.Application.Services;
+using NexAlytics.Application.Settings;
 using NexAlytics.Domain.Interfaces;
 using NexAlytics.Infrastructure.Data;
 using NexAlytics.Infrastructure.Jobs;
@@ -44,6 +45,9 @@ try
     builder.Services.AddSingleton<LoginAttemptService>();
     builder.Services.AddScoped<AuditService>();
     builder.Services.AddScoped<EtlJob>();
+    builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+    builder.Services.AddScoped<EmailService>();
+    builder.Services.AddScoped<PasswordResetService>();
 
     // Cookie Authentication
     builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -13,12 +13,21 @@ public class AccountController : Controller
     private readonly AuthService _authService;
     private readonly UsuarioService _usuarioService;
     private readonly LoginAttemptService _loginAttempts;
+    private readonly EmailService _emailService;
+    private readonly PasswordResetService _passwordReset;
 
-    public AccountController(AuthService authService, UsuarioService usuarioService, LoginAttemptService loginAttempts)
+    public AccountController(
+        AuthService authService,
+        UsuarioService usuarioService,
+        LoginAttemptService loginAttempts,
+        EmailService emailService,
+        PasswordResetService passwordReset)
     {
         _authService = authService;
         _usuarioService = usuarioService;
         _loginAttempts = loginAttempts;
+        _emailService = emailService;
+        _passwordReset = passwordReset;
     }
 
     [HttpGet]
@@ -80,6 +89,65 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login");
+    }
+
+    [HttpGet]
+    public IActionResult ForgotPassword() => View();
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPassword(string email)
+    {
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            // EmpresaId 1 is the default; in a multi-tenant scenario this could vary
+            var (token, userName) = await _passwordReset.GenerateAsync(email, 1);
+            if (token != null && userName != null)
+            {
+                var resetLink = Url.Action("ResetPassword", "Account", new { token }, Request.Scheme)!;
+                await _emailService.SendPasswordResetEmailAsync(email, userName, resetLink);
+            }
+        }
+
+        // Always show the same message to avoid revealing whether the email exists
+        TempData["Info"] = "Si el email está registrado, recibirás un enlace para restablecer tu contraseña en breve.";
+        return RedirectToAction(nameof(ForgotPassword));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ResetPassword(string? token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return RedirectToAction(nameof(ForgotPassword));
+
+        var (valid, _, _) = await _passwordReset.ValidateAsync(token);
+        if (!valid)
+            ViewData["TokenError"] = "El enlace es inválido o ha expirado.";
+
+        return View(new ResetPasswordDto { Token = token });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var (valid, _, _) = await _passwordReset.ValidateAsync(dto.Token);
+            if (!valid)
+                ViewData["TokenError"] = "El enlace es inválido o ha expirado.";
+            return View(dto);
+        }
+
+        var success = await _passwordReset.ConsumeAsync(dto.Token, dto.NuevaPassword);
+        if (!success)
+        {
+            ViewData["TokenError"] = "El enlace es inválido o ha expirado.";
+            return View(dto);
+        }
+
+        TempData["Success"] = "Contraseña restablecida exitosamente. Ya puedes iniciar sesión.";
+        return RedirectToAction(nameof(Login));
     }
 
     [Authorize]
