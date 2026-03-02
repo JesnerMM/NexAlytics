@@ -34,6 +34,34 @@ public class ClienteService
             .ToListAsync();
     }
 
+    public async Task<PagedResult<ClienteDto>> GetPagedAsync(int empresaId, int page, int pageSize, string? search = null)
+    {
+        var query = _context.Clientes.Where(c => c.EmpresaId == empresaId);
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(c => c.Nombre.Contains(search) || c.Email.Contains(search));
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Select(c => new ClienteDto
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Email = c.Email,
+                Telefono = c.Telefono,
+                FechaRegistro = c.FechaRegistro,
+                VentasCount = c.Ventas.Count,
+                TotalVentas = c.Ventas.Sum(v => v.Total)
+            })
+            .OrderBy(c => c.Nombre)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<ClienteDto> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
+    }
+
     public async Task<ClienteDto?> GetByIdAsync(int id, int empresaId)
     {
         return await _context.Clientes

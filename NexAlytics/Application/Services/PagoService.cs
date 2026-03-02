@@ -35,6 +35,30 @@ public class PagoService
             .ToListAsync();
     }
 
+    public async Task<PagedResult<PagoDto>> GetPagedAsync(int empresaId, int page, int pageSize)
+    {
+        var query = _context.Pagos.Where(p => p.Venta != null && p.Venta.EmpresaId == empresaId);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Select(p => new PagoDto
+            {
+                Id = p.Id,
+                VentaId = p.VentaId,
+                VentaInfo = $"Venta #{p.VentaId}",
+                Metodo = p.Metodo,
+                Monto = p.Monto,
+                Fecha = p.Fecha
+            })
+            .OrderByDescending(p => p.Fecha)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<PagoDto> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
+    }
+
     public async Task<PagoDto?> GetByIdAsync(int id, int empresaId)
     {
         return await _context.Pagos

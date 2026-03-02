@@ -32,6 +32,22 @@ public class UsuarioService
             .ToListAsync();
     }
 
+    public async Task<PagedResult<UsuarioDto>> GetPagedAsync(int empresaId, int page, int pageSize)
+    {
+        var query = _context.Usuarios.Where(u => u.EmpresaId == empresaId);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Select(u => new UsuarioDto { Id = u.Id, Nombre = u.Nombre, Email = u.Email, Rol = u.Rol, FechaCreacion = u.FechaCreacion })
+            .OrderBy(u => u.Nombre)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<UsuarioDto> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
+    }
+
     public async Task<UsuarioDto?> GetByIdAsync(int id, int empresaId)
     {
         return await _context.Usuarios

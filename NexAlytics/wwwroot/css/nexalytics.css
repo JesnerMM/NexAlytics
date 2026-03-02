@@ -661,3 +661,32 @@ body {
         display: none;
     }
 }
+
+/* ==============================
+   PAGINATION
+   ============================== */
+.nex-pagination .page-link {
+    background: var(--nex-card-bg);
+    border-color: var(--nex-border);
+    color: var(--nex-text);
+    font-size: 0.8rem;
+}
+
+.nex-pagination .page-link:hover {
+    background: var(--nex-sidebar-hover);
+    border-color: var(--nex-border);
+    color: var(--nex-text);
+}
+
+.nex-pagination .page-item.active .page-link {
+    background: var(--nex-primary);
+    border-color: var(--nex-primary);
+    color: #fff;
+}
+
+.nex-pagination .page-item.disabled .page-link {
+    background: var(--nex-card-bg);
+    border-color: var(--nex-border);
+    color: var(--nex-text-muted);
+    opacity: 0.5;
+}

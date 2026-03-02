@@ -15,15 +15,23 @@ public class ProductoController : Controller
         _productoService = productoService;
     }
 
-    public async Task<IActionResult> Index(string? categoria, bool? activo)
+    private const int PageSize = 10;
+
+    public async Task<IActionResult> Index(string? categoria, bool? activo, int page = 1)
     {
+        page = Math.Max(1, page);
         var empresaId = GetEmpresaId();
-        var productos = await _productoService.GetAllAsync(empresaId, categoria, activo);
+        var result = await _productoService.GetPagedAsync(empresaId, page, PageSize, categoria, activo);
         var categorias = await _productoService.GetCategoriasAsync(empresaId);
+
         ViewData["Categorias"] = categorias;
         ViewData["CategoriaFiltro"] = categoria;
         ViewData["ActivoFiltro"] = activo;
-        return View(productos);
+        ViewData["Page"] = result.Page;
+        ViewData["TotalPages"] = result.TotalPages;
+        ViewData["TotalCount"] = result.TotalCount;
+        ViewData["PageSize"] = result.PageSize;
+        return View(result);
     }
 
     public IActionResult Create() => View(new ProductoDto { Activo = true });

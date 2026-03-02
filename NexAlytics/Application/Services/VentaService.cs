@@ -35,6 +35,30 @@ public class VentaService
             .ToListAsync();
     }
 
+    public async Task<PagedResult<VentaDto>> GetPagedAsync(int empresaId, int page, int pageSize)
+    {
+        var query = _context.Ventas.Where(v => v.EmpresaId == empresaId);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Select(v => new VentaDto
+            {
+                Id = v.Id,
+                ClienteId = v.ClienteId,
+                ClienteNombre = v.Cliente != null ? v.Cliente.Nombre : string.Empty,
+                Fecha = v.Fecha,
+                Total = v.Total,
+                Estado = v.Estado
+            })
+            .OrderByDescending(v => v.Fecha)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<VentaDto> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
+    }
+
     public async Task<VentaDto?> GetByIdAsync(int id, int empresaId)
     {
         var venta = await _context.Ventas

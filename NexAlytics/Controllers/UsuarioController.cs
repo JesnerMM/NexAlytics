@@ -16,10 +16,18 @@ public class UsuarioController : Controller
         _usuarioService = usuarioService;
     }
 
-    public async Task<IActionResult> Index()
+    private const int PageSize = 10;
+
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var usuarios = await _usuarioService.GetAllAsync(GetEmpresaId());
-        return View(usuarios);
+        page = Math.Max(1, page);
+        var result = await _usuarioService.GetPagedAsync(GetEmpresaId(), page, PageSize);
+
+        ViewData["Page"] = result.Page;
+        ViewData["TotalPages"] = result.TotalPages;
+        ViewData["TotalCount"] = result.TotalCount;
+        ViewData["PageSize"] = result.PageSize;
+        return View(result);
     }
 
     public IActionResult Create() => View(new UsuarioDto());

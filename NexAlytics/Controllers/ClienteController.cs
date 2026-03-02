@@ -15,18 +15,19 @@ public class ClienteController : Controller
         _clienteService = clienteService;
     }
 
-    public async Task<IActionResult> Index(string? search)
-    {
-        var empresaId = GetEmpresaId();
-        var clientes = await _clienteService.GetAllAsync(empresaId);
+    private const int PageSize = 10;
 
-        if (!string.IsNullOrWhiteSpace(search))
-            clientes = clientes.Where(c =>
-                c.Nombre.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                c.Email.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+    public async Task<IActionResult> Index(string? search, int page = 1)
+    {
+        page = Math.Max(1, page);
+        var result = await _clienteService.GetPagedAsync(GetEmpresaId(), page, PageSize, search);
 
         ViewData["Search"] = search;
-        return View(clientes);
+        ViewData["Page"] = result.Page;
+        ViewData["TotalPages"] = result.TotalPages;
+        ViewData["TotalCount"] = result.TotalCount;
+        ViewData["PageSize"] = result.PageSize;
+        return View(result);
     }
 
     public IActionResult Create() => View(new ClienteDto());

@@ -18,10 +18,18 @@ public class PagoController : Controller
         _ventaService = ventaService;
     }
 
-    public async Task<IActionResult> Index()
+    private const int PageSize = 10;
+
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var pagos = await _pagoService.GetAllAsync(GetEmpresaId());
-        return View(pagos);
+        page = Math.Max(1, page);
+        var result = await _pagoService.GetPagedAsync(GetEmpresaId(), page, PageSize);
+
+        ViewData["Page"] = result.Page;
+        ViewData["TotalPages"] = result.TotalPages;
+        ViewData["TotalCount"] = result.TotalCount;
+        ViewData["PageSize"] = result.PageSize;
+        return View(result);
     }
 
     public async Task<IActionResult> Create(int? ventaId)

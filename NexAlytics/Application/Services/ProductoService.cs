@@ -35,6 +35,24 @@ public class ProductoService
             .ToListAsync();
     }
 
+    public async Task<PagedResult<ProductoDto>> GetPagedAsync(int empresaId, int page, int pageSize, string? categoria = null, bool? activo = null)
+    {
+        var query = _context.Productos.Where(p => p.EmpresaId == empresaId);
+        if (!string.IsNullOrEmpty(categoria)) query = query.Where(p => p.Categoria == categoria);
+        if (activo.HasValue) query = query.Where(p => p.Activo == activo.Value);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Select(p => new ProductoDto { Id = p.Id, Nombre = p.Nombre, Categoria = p.Categoria, Precio = p.Precio, Activo = p.Activo })
+            .OrderBy(p => p.Categoria).ThenBy(p => p.Nombre)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<ProductoDto> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
+    }
+
     public async Task<ProductoDto?> GetByIdAsync(int id, int empresaId)
     {
         return await _context.Productos
