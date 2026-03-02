@@ -14,7 +14,15 @@
       "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add FixStgVentaDecimal 2>&1)",
       "Bash(\"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" database drop --force 2>&1)",
       "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" build 2>&1)",
-      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics\" && \"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add AddAuditLog 2>&1)"
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics\" && \"/mnt/c/Users/JesnerEliecerMelgara/.dotnet/tools/dotnet-ef.exe\" migrations add AddAuditLog 2>&1)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" sln NexAlytics/NexAlytics.sln add NexAlytics.Tests/NexAlytics.Tests.csproj 2>&1)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" add package Microsoft.EntityFrameworkCore.InMemory --version 9.0.1 2>&1 && \"/mnt/c/Program Files/dotnet/dotnet.exe\" add reference ../NexAlytics/NexAlytics.csproj 2>&1)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test --verbosity normal 2>&1)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test --verbosity normal 2>&1 | tail -40)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test --verbosity normal 2>&1 | tail -35)",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test --verbosity detailed 2>&1 | grep -A 20 \"Incorrecto\\\\|Failed\\\\|Errónea\\\\|Error en\")",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test 2>&1 | grep -E \"Correcto|Incorrecto|FAILED|failed|Error en|error\")",
+      "Bash(cd \"/mnt/c/Users/JesnerEliecerMelgara/Desktop/NexAlytics/NexAlytics.Tests\" && \"/mnt/c/Program Files/dotnet/dotnet.exe\" test 2>&1 | tail -8)"
     ]
   }
 }
